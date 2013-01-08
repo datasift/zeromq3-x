@@ -108,7 +108,7 @@ int zmq::lb_t::send (msg_t *msg_, int flags_)
         return -1;
     }
 
-    //  If it's final part of the message we can fluch it downstream and
+    //  If it's final part of the message we can flush it downstream and
     //  continue round-robinning (load balance).
     more = msg_->flags () & msg_t::more? true: false;
     if (!more) {
