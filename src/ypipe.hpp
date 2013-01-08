@@ -77,7 +77,7 @@ namespace zmq
             queue.back () = value_;
             queue.push ();
 
-            //  Move the "flush up to here" poiter.
+            //  Move the "flush up to here" pointer.
             if (!incomplete_)
                 f = &queue.back ();
         }
@@ -109,7 +109,7 @@ namespace zmq
             //  Try to set 'c' to 'f'.
             if (c.cas (w, f) != w) {
 
-                //  Compare-and-swap was unseccessful because 'c' is NULL.
+                //  Compare-and-swap was unsuccessful because 'c' is NULL.
                 //  This means that the reader is asleep. Therefore we don't
                 //  care about thread-safeness and update c in non-atomic
                 //  manner. We'll return false to let the caller know
@@ -164,7 +164,7 @@ namespace zmq
             return true;
         }
 
-        //  Applies the function fn to the first elemenent in the pipe
+        //  Applies the function fn to the first element in the pipe
         //  and returns the value returned by the fn.
         //  The pipe mustn't be empty or the function crashes.
         inline bool probe (bool (*fn)(T &))

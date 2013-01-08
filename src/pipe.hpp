@@ -99,7 +99,7 @@ namespace zmq
         //  Flush the messages downsteam.
         void flush ();
 
-        //  Temporaraily disconnects the inbound message stream and drops
+        //  Temporarily disconnects the inbound message stream and drops
         //  all the messages on the fly. Causes 'hiccuped' event to be generated
         //  in the peer.
         void hiccup ();
