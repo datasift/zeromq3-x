@@ -337,12 +337,12 @@ int zmq::socket_base_t::bind (const char *addr_)
     }
 
     if (protocol == "pgm" || protocol == "epgm") {
-        //  For convenience's sake, bind can be used interchageable with
+        //  For convenience's sake, bind can be used interchangeable with
         //  connect for PGM and EPGM transports.
         return connect (addr_);
     }
 
-    //  Remaining trasnports require to be run in an I/O thread, so at this
+    //  Remaining transports require to be run in an I/O thread, so at this
     //  point we'll choose one.
     io_thread_t *io_thread = choose_io_thread (options.affinity);
     if (!io_thread) {
