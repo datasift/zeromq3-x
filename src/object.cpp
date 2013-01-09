@@ -83,7 +83,7 @@ void zmq::object_t::process_command (command_t &cmd_)
         break;
 
     case command_t::attach:
-        process_attach (cmd_.args.attach.engine);
+        process_attach (cmd_.args.attach.engine, cmd_.args.attach.connection_id);
         process_seqnum ();
         break;
 
@@ -186,7 +186,7 @@ void zmq::object_t::send_own (own_t *destination_, own_t *object_)
 }
 
 void zmq::object_t::send_attach (session_base_t *destination_,
-    i_engine *engine_, bool inc_seqnum_)
+    i_engine *engine_, bool inc_seqnum_, int connection_id_)
 {
     if (inc_seqnum_)
         destination_->inc_seqnum ();
@@ -195,6 +195,7 @@ void zmq::object_t::send_attach (session_base_t *destination_,
     cmd.destination = destination_;
     cmd.type = command_t::attach;
     cmd.args.attach.engine = engine_;
+    cmd.args.attach.connection_id = connection_id_;
     send_command (cmd);
 }
 
@@ -321,7 +322,7 @@ void zmq::object_t::process_own (own_t *)
     zmq_assert (false);
 }
 
-void zmq::object_t::process_attach (i_engine *)
+void zmq::object_t::process_attach (i_engine *, int)
 {
     zmq_assert (false);
 }

@@ -64,6 +64,7 @@ zmq::pipe_t::pipe_t (object_t *parent_, upipe_t *inpipe_, upipe_t *outpipe_,
     peers_msgs_read (0),
     peer (NULL),
     sink (NULL),
+    connection_id (0),
     state (active),
     delay (delay_)
 {
@@ -85,6 +86,18 @@ void zmq::pipe_t::set_event_sink (i_pipe_events *sink_)
     // Sink can be set once only.
     zmq_assert (!sink);
     sink = sink_;
+}
+
+void zmq::pipe_t::set_connection_id (int connection_id_)
+{
+    if (state != active)
+        return;
+
+    connection_id = connection_id_;
+    // TODO: check if this is actually safe, probably change anyway because
+    //       it's horrible but should work for now
+    if (peer)
+        peer->connection_id = connection_id_;
 }
 
 void zmq::pipe_t::set_identity (const blob_t &identity_)
@@ -140,8 +153,10 @@ bool zmq::pipe_t::read (msg_t *msg_)
     if (!(msg_->flags () & msg_t::more))
         msgs_read++;
 
-    if (lwm > 0 && msgs_read % lwm == 0)
+    if (lwm > 0 && msgs_read % lwm == 0) {
         send_activate_write (peer, msgs_read);
+        sink->read (connection_id, msgs_read);
+    }
 
     return true;
 }

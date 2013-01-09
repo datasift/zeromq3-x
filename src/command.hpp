@@ -80,6 +80,7 @@ namespace zmq
             //  session that the connection have failed.
             struct {
                 struct i_engine *engine;
+                int connection_id;
             } attach;
 
             //  Sent from session to socket to establish pipe(s) between them.

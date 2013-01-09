@@ -252,6 +252,11 @@ void zmq::session_base_t::terminated (pipe_t *pipe_)
         proceed_with_term ();
 }
 
+void zmq::session_base_t::read (int, uint64_t)
+{
+    // No need to inform anyone so ignore
+}
+
 void zmq::session_base_t::read_activated (pipe_t *pipe_)
 {
     // Skip activating if we're detaching this pipe
@@ -296,7 +301,7 @@ void zmq::session_base_t::process_plug ()
         start_connecting (false);
 }
 
-void zmq::session_base_t::process_attach (i_engine *engine_)
+void zmq::session_base_t::process_attach (i_engine *engine_, int connection_id_)
 {
     zmq_assert (engine_ != NULL);
 
@@ -324,6 +329,10 @@ void zmq::session_base_t::process_attach (i_engine *engine_)
     zmq_assert (!engine);
     engine = engine_;
     engine->plug (io_thread, this);
+
+    //  Link connection_id for event tagging
+    if (pipe)
+        pipe->set_connection_id(connection_id_);
 }
 
 void zmq::session_base_t::detach ()

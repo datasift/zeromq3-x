@@ -54,6 +54,7 @@ namespace zmq
         virtual void write_activated (zmq::pipe_t *pipe_) = 0;
         virtual void hiccuped (zmq::pipe_t *pipe_) = 0;
         virtual void terminated (zmq::pipe_t *pipe_) = 0;
+        virtual void read (int connection_id, uint64_t msgs_read_) = 0;
     };
 
     //  Note that pipe can be stored in three different arrays.
@@ -74,6 +75,9 @@ namespace zmq
 
         //  Specifies the object to send events to.
         void set_event_sink (i_pipe_events *sink_);
+
+        //  Specifies connection_id
+        void set_connection_id (int connection_id_);
 
         //  Pipe endpoint can store an opaque ID to be used by its clients.
         void set_identity (const blob_t &identity_);
@@ -164,6 +168,9 @@ namespace zmq
 
         //  Sink to send events to.
         i_pipe_events *sink;
+
+        //  Connection id of remote endpoint for events
+        int connection_id;
 
         //  State of the pipe endpoint. Active is common state before any
         //  termination begins. Delimited means that delimiter was read from
