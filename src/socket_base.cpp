@@ -1026,9 +1026,9 @@ void zmq::socket_base_t::terminated (pipe_t *pipe_)
         unregister_term_ack ();
 }
 
-void zmq::socket_base_t::read (int connection_id_, uint64_t msgs_read_)
+void zmq::socket_base_t::msgs (int connection_id_, uint64_t msgs_)
 {
-    event_connection_read(connection_id_, msgs_read_);
+    event_connection_msgs(connection_id_, msgs_);
 }
 
 void zmq::socket_base_t::extract_flags (msg_t *msg_)
@@ -1211,16 +1211,16 @@ void zmq::socket_base_t::event_disconnected (std::string &addr_, int fd_)
     }
 }
 
-void zmq::socket_base_t::event_connection_read (int connection_id_, uint64_t msgs_read_)
+void zmq::socket_base_t::event_connection_msgs (int connection_id_, uint64_t msgs_)
 {
     // TODO: Decide if just to rename connection_id to fd as that is what it is
     //       and this would put it in line with the other events that it will
     //       be matched to in the monitor code.
-    if (monitor_events & ZMQ_EVENT_CONNECTION_READ) {
+    if (monitor_events & ZMQ_EVENT_CONNECTION_MSGS) {
         zmq_event_t event;
-        event.event = ZMQ_EVENT_CONNECTION_READ;
-        event.data.connection_read.connection_id = connection_id_;
-        event.data.connection_read.msgs_read = msgs_read_;
+        event.event = ZMQ_EVENT_CONNECTION_MSGS;
+        event.data.connection_msgs.connection_id = connection_id_;
+        event.data.connection_msgs.msgs = msgs_;
         monitor_event (event);
     }
 }
@@ -1234,7 +1234,6 @@ void zmq::socket_base_t::copy_monitor_address (char *dest_, std::string &src_)
 
 void zmq::socket_base_t::monitor_event (zmq_event_t event_)
 {
-    fprintf (stderr, "foo\n");
     if (monitor_socket) {
         zmq_msg_t msg;
         void *event_data = malloc (sizeof (event_));

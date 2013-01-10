@@ -252,7 +252,7 @@ void zmq::session_base_t::terminated (pipe_t *pipe_)
         proceed_with_term ();
 }
 
-void zmq::session_base_t::read (int, uint64_t)
+void zmq::session_base_t::msgs (int, uint64_t)
 {
     // No need to inform anyone so ignore
 }

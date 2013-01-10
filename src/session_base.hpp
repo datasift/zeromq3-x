@@ -75,7 +75,7 @@ namespace zmq
         void write_activated (zmq::pipe_t *pipe_);
         void hiccuped (zmq::pipe_t *pipe_);
         void terminated (zmq::pipe_t *pipe_);
-        void read (int connection_id, uint64_t msgs_read_);
+        void msgs (int connection_id, uint64_t msgs_);
 
         socket_base_t *get_socket ();
 

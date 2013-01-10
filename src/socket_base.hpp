@@ -104,7 +104,7 @@ namespace zmq
         void write_activated (pipe_t *pipe_);
         void hiccuped (pipe_t *pipe_);
         void terminated (pipe_t *pipe_);
-        void read (int connection_id_, uint64_t msgs_read_);
+        void msgs (int connection_id_, uint64_t msgs_);
         void lock();
         void unlock();
 
@@ -120,7 +120,7 @@ namespace zmq
         void event_closed (std::string &addr_, int fd_);
         void event_close_failed (std::string &addr_, int fd_);
         void event_disconnected (std::string &addr_, int fd_);
-        void event_connection_read (int connection_id_, uint64_t msgs_read_);
+        void event_connection_msgs (int connection_id_, uint64_t msgs_read_);
 
     protected:
 

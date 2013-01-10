@@ -117,6 +117,8 @@ bool zmq::pipe_t::check_read ()
 
     //  Check if there's an item in the pipe.
     if (!inpipe->check_read ()) {
+        // TODO: check how much slower this makes things.
+        send_activate_write (peer, msgs_read);
         in_active = false;
         return false;
     }
@@ -153,10 +155,8 @@ bool zmq::pipe_t::read (msg_t *msg_)
     if (!(msg_->flags () & msg_t::more))
         msgs_read++;
 
-    if (lwm > 0 && msgs_read % lwm == 0) {
+    if (lwm > 0 && msgs_read % lwm == 0)
         send_activate_write (peer, msgs_read);
-        sink->read (connection_id, msgs_read);
-    }
 
     return true;
 }
@@ -224,6 +224,7 @@ void zmq::pipe_t::process_activate_write (uint64_t msgs_read_)
 {
     //  Remember the peers's message sequence number.
     peers_msgs_read = msgs_read_;
+    sink->msgs (connection_id, msgs_written - peers_msgs_read);
 
     if (!out_active && state == active) {
         out_active = true;
