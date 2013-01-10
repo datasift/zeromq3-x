@@ -72,6 +72,7 @@ struct iovec {
 
 #include "proxy.hpp"
 #include "socket_base.hpp"
+#include "collator.hpp"
 #include "stdint.hpp"
 #include "config.hpp"
 #include "likely.hpp"
@@ -609,6 +610,56 @@ int zmq_msg_set (zmq_msg_t *, int, int)
     //  No options supported at present
     errno = EINVAL;
     return -1;
+}
+
+// Collator
+
+void *zmq_collator (void *ctx_, void *s_)
+{
+    if (!ctx_ || !((zmq::ctx_t*) ctx_)->check_tag ()) {
+        errno = EFAULT;
+        return NULL;
+    }
+
+    if (!s_ || !((zmq::socket_base_t*) s_)->check_tag ()) {
+        errno = ENOTSOCK;
+        return NULL;
+    }
+
+    return zmq::collator_t::create ((zmq::ctx_t*) ctx_, (zmq::socket_base_t*) s_);
+}
+
+int zmq_collator_process (void *c_)
+{
+    if (!c_ || !((zmq::collator_t*) c_)->check_tag ()) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    zmq::collator_t *c = (zmq::collator_t *) c_;
+    return c->process();
+}
+
+int zmq_collator_connections (void *c_, int *connections_)
+{
+    if (!c_ || !((zmq::collator_t*) c_)->check_tag ()) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    zmq::collator_t *c = (zmq::collator_t *) c_;
+    return c->connections(connections_);
+}
+
+int zmq_collator_status (void *c_, zmq_connection_status_t* status_, int *connections_)
+{
+    if (!c_ || !((zmq::collator_t*) c_)->check_tag ()) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    zmq::collator_t *c = (zmq::collator_t *) c_;
+    return c->status(status_, connections_);
 }
 
 // Polling.
