@@ -648,7 +648,8 @@ int zmq_collator_connections (void *c_, int *connections_)
     }
 
     zmq::collator_t *c = (zmq::collator_t *) c_;
-    return c->connections(connections_);
+    c->connections(connections_);
+    return 0;
 }
 
 int zmq_collator_status (void *c_, zmq_connection_status_t* status_, int *connections_)
@@ -659,7 +660,21 @@ int zmq_collator_status (void *c_, zmq_connection_status_t* status_, int *connec
     }
 
     zmq::collator_t *c = (zmq::collator_t *) c_;
-    return c->status(status_, connections_);
+    c->status(status_, connections_);
+    return 0;
+}
+
+int zmq_collator_close (void *c_)
+{
+    if (!c_ || !((zmq::collator_t*) c_)->check_tag ()) {
+        errno = EFAULT;
+        return -1;
+    }
+
+    zmq::collator_t *c = (zmq::collator_t *) c_;
+    c->close();
+    delete c;
+    return 0;
 }
 
 // Polling.

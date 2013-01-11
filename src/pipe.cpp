@@ -170,6 +170,7 @@ bool zmq::pipe_t::check_write ()
 
     if (unlikely (full)) {
         out_active = false;
+        sink->msgs (connection_id, msgs_written - peers_msgs_read);
         return false;
     }
 

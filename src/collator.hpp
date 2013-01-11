@@ -41,6 +41,7 @@ namespace zmq
     {
 
     public:
+        virtual ~collator_t ();
 
         //  Returns false if object is not a socket.
         bool check_tag ();
@@ -51,18 +52,20 @@ namespace zmq
 
         //  Interface for communication with the API layer.
         int process ();
-        int connections (int *connections_);
-        int status (zmq_connection_status_t* status, int *connections_);
-        int close ();
+        void connections (int *connections_);
+        void status (zmq_connection_status_t* status, int *connections_);
+        void close ();
 
     private:
+        collator_t (zmq::ctx_t *parent_, void *socket);
 
-        collator_t (zmq::ctx_t *parent_);
-        virtual ~collator_t ();
+        void connect(void *monitor_);
+        void event_connected(int connection_id_, char const* addr_);
+        void event_disconnected(int connection_id_);
+        void event_update_msgs(int connection_id_, size_t msgs_);
 
-        void connect(void *socket_);
-
-        void* socket;
+        void *socket;
+        void *monitor;
 
         //  Map of open connections.
         typedef std::map <int, zmq_connection_status_t> status_t;

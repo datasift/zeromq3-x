@@ -363,6 +363,7 @@ ZMQ_EXPORT int zmq_recvmsg (void *s, zmq_msg_t *msg, int flags);
 #define ZMQ_CONNECTION_STATUS_ADDRESS_MAX_SIZE 64
 
 typedef struct {
+    bool connected;
     char addr[ZMQ_CONNECTION_STATUS_ADDRESS_MAX_SIZE + 1];
     size_t pending;
 } zmq_connection_status_t;
