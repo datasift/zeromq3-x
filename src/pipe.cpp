@@ -422,7 +422,11 @@ int zmq::pipe_t::compute_lwm (int hwm_)
     int result = (hwm_ > max_wm_delta * 2) ?
         hwm_ - max_wm_delta : (hwm_ + 1) / 2;
 
-    return result;
+    // The LWN is only used to reactivate the write flag so point 2 doesn't
+    // make sense unless the overhead of filling the potentially smaller empty
+    // buffer is significant. We don't want too many events however so don't
+    // reduce it too much, just enough to make the stats more usable.
+    return (result + 3) / 4;
 }
 
 void zmq::pipe_t::delimit ()
