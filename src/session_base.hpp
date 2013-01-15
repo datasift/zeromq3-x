@@ -75,6 +75,7 @@ namespace zmq
         void write_activated (zmq::pipe_t *pipe_);
         void hiccuped (zmq::pipe_t *pipe_);
         void terminated (zmq::pipe_t *pipe_);
+        void msgs (int connection_id, uint64_t msgs_);
 
         socket_base_t *get_socket ();
 
@@ -93,7 +94,7 @@ namespace zmq
 
         //  Handlers for incoming commands.
         void process_plug ();
-        void process_attach (zmq::i_engine *engine_);
+        void process_attach (zmq::i_engine *engine_, int connection_id_);
         void process_term (int linger_);
 
         //  i_poll_events handlers.

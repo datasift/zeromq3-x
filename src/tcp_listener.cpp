@@ -107,7 +107,7 @@ void zmq::tcp_listener_t::in_event ()
     errno_assert (session);
     session->inc_seqnum ();
     launch_child (session);
-    send_attach (session, engine, false);
+    send_attach (session, engine, false, fd);
     socket->event_accepted (endpoint, fd);
 }
 

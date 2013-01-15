@@ -64,6 +64,7 @@ zmq::pipe_t::pipe_t (object_t *parent_, upipe_t *inpipe_, upipe_t *outpipe_,
     peers_msgs_read (0),
     peer (NULL),
     sink (NULL),
+    connection_id (0),
     state (active),
     delay (delay_)
 {
@@ -87,6 +88,18 @@ void zmq::pipe_t::set_event_sink (i_pipe_events *sink_)
     sink = sink_;
 }
 
+void zmq::pipe_t::set_connection_id (int connection_id_)
+{
+    if (state != active)
+        return;
+
+    connection_id = connection_id_;
+    // TODO: check if this is actually safe, probably change anyway because
+    //       it's horrible but should work for now
+    if (peer)
+        peer->connection_id = connection_id_;
+}
+
 void zmq::pipe_t::set_identity (const blob_t &identity_)
 {
     identity = identity_;
@@ -104,6 +117,8 @@ bool zmq::pipe_t::check_read ()
 
     //  Check if there's an item in the pipe.
     if (!inpipe->check_read ()) {
+        // TODO: check how much slower this makes things.
+        send_activate_write (peer, msgs_read);
         in_active = false;
         return false;
     }
@@ -155,6 +170,7 @@ bool zmq::pipe_t::check_write ()
 
     if (unlikely (full)) {
         out_active = false;
+        sink->msgs (connection_id, msgs_written - peers_msgs_read);
         return false;
     }
 
@@ -209,6 +225,7 @@ void zmq::pipe_t::process_activate_write (uint64_t msgs_read_)
 {
     //  Remember the peers's message sequence number.
     peers_msgs_read = msgs_read_;
+    sink->msgs (connection_id, msgs_written - peers_msgs_read);
 
     if (!out_active && state == active) {
         out_active = true;
@@ -405,7 +422,11 @@ int zmq::pipe_t::compute_lwm (int hwm_)
     int result = (hwm_ > max_wm_delta * 2) ?
         hwm_ - max_wm_delta : (hwm_ + 1) / 2;
 
-    return result;
+    // The LWN is only used to reactivate the write flag so point 2 doesn't
+    // make sense unless the overhead of filling the potentially smaller empty
+    // buffer is significant. We don't want too many events however so don't
+    // reduce it too much, just enough to make the stats more usable.
+    return (result + 3) / 4;
 }
 
 void zmq::pipe_t::delimit ()
