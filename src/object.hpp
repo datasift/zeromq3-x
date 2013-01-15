@@ -75,7 +75,8 @@ namespace zmq
         void send_own (zmq::own_t *destination_,
             zmq::own_t *object_);
         void send_attach (zmq::session_base_t *destination_,
-             zmq::i_engine *engine_, bool inc_seqnum_ = true);
+             zmq::i_engine *engine_, bool inc_seqnum_ = true,
+             int connection_id_ = 0);
         void send_bind (zmq::own_t *destination_, zmq::pipe_t *pipe_,
              bool inc_seqnum_ = true);
         void send_activate_read (zmq::pipe_t *destination_);
@@ -97,7 +98,7 @@ namespace zmq
         virtual void process_stop ();
         virtual void process_plug ();
         virtual void process_own (zmq::own_t *object_);
-        virtual void process_attach (zmq::i_engine *engine_);
+        virtual void process_attach (zmq::i_engine *engine_, int connection_id_);
         virtual void process_bind (zmq::pipe_t *pipe_);
         virtual void process_activate_read ();
         virtual void process_activate_write (uint64_t msgs_read_);

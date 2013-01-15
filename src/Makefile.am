@@ -12,6 +12,7 @@ libzmq_la_SOURCES = \
     atomic_ptr.hpp \
     blob.hpp \
     clock.hpp \
+    collator.hpp \
     command.hpp \
     config.hpp \
     ctx.hpp \
@@ -86,6 +87,7 @@ libzmq_la_SOURCES = \
     ypipe.hpp \
     yqueue.hpp \
     address.cpp \
+    collator.cpp \
     clock.cpp \
     ctx.cpp \
     decoder.cpp \

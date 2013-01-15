@@ -1026,6 +1026,11 @@ void zmq::socket_base_t::terminated (pipe_t *pipe_)
         unregister_term_ack ();
 }
 
+void zmq::socket_base_t::msgs (int connection_id_, uint64_t msgs_)
+{
+    event_connection_msgs(connection_id_, msgs_);
+}
+
 void zmq::socket_base_t::extract_flags (msg_t *msg_)
 {
     //  Test whether IDENTITY flag is valid for this socket type.
@@ -1202,6 +1207,20 @@ void zmq::socket_base_t::event_disconnected (std::string &addr_, int fd_)
         event.data.disconnected.addr = (char *) malloc (addr_.size () + 1);
         copy_monitor_address (event.data.disconnected.addr, addr_);
         event.data.disconnected.fd = fd_;
+        monitor_event (event);
+    }
+}
+
+void zmq::socket_base_t::event_connection_msgs (int connection_id_, uint64_t msgs_)
+{
+    // TODO: Decide if just to rename connection_id to fd as that is what it is
+    //       and this would put it in line with the other events that it will
+    //       be matched to in the monitor code.
+    if (monitor_events & ZMQ_EVENT_CONNECTION_MSGS) {
+        zmq_event_t event;
+        event.event = ZMQ_EVENT_CONNECTION_MSGS;
+        event.data.connection_msgs.connection_id = connection_id_;
+        event.data.connection_msgs.msgs = msgs_;
         monitor_event (event);
     }
 }
