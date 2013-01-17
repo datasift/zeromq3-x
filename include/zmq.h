@@ -298,6 +298,7 @@ typedef struct {
     struct {
         char *addr;
         int fd;
+        char *peer_addr;
     } connected;
     struct {
         char *addr;
@@ -318,6 +319,7 @@ typedef struct {
     struct {
         char *addr;
         int fd;
+        char *peer_addr;
     } accepted;
     struct {
         char *addr;

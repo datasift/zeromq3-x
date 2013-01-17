@@ -1091,13 +1091,15 @@ int zmq::socket_base_t::monitor (const char *addr_, int events_)
     return rc;
 }
 
-void zmq::socket_base_t::event_connected (std::string &addr_, int fd_)
+void zmq::socket_base_t::event_connected (std::string &addr_, int fd_, std::string &peer_addr_)
 {
     if (monitor_events & ZMQ_EVENT_CONNECTED) {
         zmq_event_t event;
         event.event = ZMQ_EVENT_CONNECTED;
         event.data.connected.addr = (char *) malloc (addr_.size () + 1);
         copy_monitor_address (event.data.connected.addr, addr_);
+        event.data.connected.peer_addr = (char *) malloc (peer_addr_.size () + 1);
+        copy_monitor_address (event.data.connected.peer_addr, peer_addr_);
         event.data.connected.fd = fd_;
         monitor_event (event);
     }
@@ -1151,13 +1153,15 @@ void zmq::socket_base_t::event_bind_failed (std::string &addr_, int err_)
     }
 }
 
-void zmq::socket_base_t::event_accepted (std::string &addr_, int fd_)
+void zmq::socket_base_t::event_accepted (std::string &addr_, int fd_, std::string &peer_addr_)
 {
     if (monitor_events & ZMQ_EVENT_ACCEPTED) {
         zmq_event_t event;
         event.event = ZMQ_EVENT_ACCEPTED;
         event.data.accepted.addr = (char *) malloc (addr_.size () + 1);
         copy_monitor_address (event.data.accepted.addr, addr_);
+        event.data.accepted.peer_addr = (char *) malloc (peer_addr_.size () + 1);
+        copy_monitor_address (event.data.accepted.peer_addr, peer_addr_);
         event.data.accepted.fd = fd_;
         monitor_event (event);
     }

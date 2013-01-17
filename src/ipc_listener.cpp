@@ -96,7 +96,7 @@ void zmq::ipc_listener_t::in_event ()
     session->inc_seqnum ();
     launch_child (session);
     send_attach (session, engine, false, fd);
-    socket->event_accepted (endpoint, fd);
+    socket->event_accepted (endpoint, fd, endpoint);
 }
 
 int zmq::ipc_listener_t::get_address (std::string &addr_)

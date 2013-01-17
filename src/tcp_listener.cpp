@@ -80,7 +80,8 @@ void zmq::tcp_listener_t::process_term (int linger_)
 
 void zmq::tcp_listener_t::in_event ()
 {
-    fd_t fd = accept ();
+    std::string peer;
+    fd_t fd = accept (peer);
 
     //  If connection was reset by the peer in the meantime, just ignore it.
     //  TODO: Handle specific errors like ENFILE/EMFILE etc.
@@ -108,7 +109,7 @@ void zmq::tcp_listener_t::in_event ()
     session->inc_seqnum ();
     launch_child (session);
     send_attach (session, engine, false, fd);
-    socket->event_accepted (endpoint, fd);
+    socket->event_accepted (endpoint, fd, peer);
 }
 
 void zmq::tcp_listener_t::close ()
@@ -233,7 +234,7 @@ error:
     return -1;
 }
 
-zmq::fd_t zmq::tcp_listener_t::accept ()
+zmq::fd_t zmq::tcp_listener_t::accept (std::string& peer_)
 {
     //  The situation where connection cannot be accepted due to insufficient
     //  resources is considered valid and treated by ignoring the connection.
@@ -288,6 +289,9 @@ zmq::fd_t zmq::tcp_listener_t::accept ()
             return retired_fd;
         }
     }
+
+    tcp_address_t peer((struct sockaddr *) &ss, ss_len);
+    peer.to_string(peer_);
 
     return sock;
 }
