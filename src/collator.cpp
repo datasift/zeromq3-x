@@ -129,11 +129,11 @@ int zmq::collator_t::process ()
         {
         case ZMQ_EVENT_CONNECTED:
             // Remote peer connection
-            event_connected(event.data.connected.fd, event.data.connected.addr);
+            event_connected(event.data.connected.fd, event.data.connected.peer_addr);
             break;
         case ZMQ_EVENT_ACCEPTED:
             // Remote peer connection
-            event_connected(event.data.accepted.fd, event.data.accepted.addr);
+            event_connected(event.data.accepted.fd, event.data.accepted.peer_addr);
             break;
         case ZMQ_EVENT_DISCONNECTED:
             // Remote peer disconnection
