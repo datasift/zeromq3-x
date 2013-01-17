@@ -65,7 +65,7 @@ namespace zmq
         //  newly created connection. The function may return retired_fd
         //  if the connection was dropped while waiting in the listen backlog
         //  or was denied because of accept filters.
-        fd_t accept ();
+        fd_t accept (std::string&);
 
         //  Address to listen on.
         tcp_address_t address;
