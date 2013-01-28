@@ -195,7 +195,7 @@ void zmq::collator_t::event_connected(int connection_id_, char const* addr_)
     if (size > ZMQ_CONNECTION_STATUS_ADDRESS_MAX_SIZE)
         size = ZMQ_CONNECTION_STATUS_ADDRESS_MAX_SIZE;
 
-    connection_status[connection_id_].connected = true;
+    connection_status[connection_id_].connected = 1;
     connection_status[connection_id_].addr[ZMQ_CONNECTION_STATUS_ADDRESS_MAX_SIZE] = 0;
     memcpy (connection_status[connection_id_].addr, addr_, size);
     connection_status[connection_id_].pending = 0;
@@ -207,7 +207,7 @@ void zmq::collator_t::event_disconnected(int connection_id_)
     if (it == connection_status.end())
         return;
 
-    it->second.connected = false;
+    it->second.connected = 0;
 }
 
 void zmq::collator_t::event_update_msgs(int connection_id_, size_t msgs_)
